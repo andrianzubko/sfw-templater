@@ -62,7 +62,7 @@ class Templater
 
         ob_start(fn() => null);
 
-        new Isolator($template, array_merge(self::$properties, $properties));
+        new Templater\Isolator($template, array_merge(self::$properties, $properties));
 
         $contents = ob_get_clean();
 
@@ -70,6 +70,6 @@ class Templater
             date_default_timezone_set($timezonePrev);
         }
 
-        return Minifier::minify($contents);
+        return Templater\Minifier::minify($contents);
     }
 }
