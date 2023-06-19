@@ -15,7 +15,7 @@ class Templater
     /**
      * Transforming template to final page.
      */
-    public static function transform(string $template, array $properties = [], ?string $timezone = null): string
+    public static function transform(string $template, array $properties = [], bool $minify = true, ?string $timezone = null): string
     {
         if (!isset(self::$properties)) {
             self::$properties = [
@@ -70,6 +70,10 @@ class Templater
             date_default_timezone_set($timezonePrev);
         }
 
-        return Templater\Minifier::minify($contents);
+        if ($minify) {
+            return Templater\Minifier::minify($contents);
+        }
+
+        return $contents;
     }
 }
