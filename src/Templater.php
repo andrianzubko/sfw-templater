@@ -13,7 +13,7 @@ class Templater
     protected static array $properties;
 
     /**
-     * Transforming template to final page.
+     * Transforming template to page.
      */
     public static function transform(string $template, array $properties = [], ?string $timezone = null): string
     {

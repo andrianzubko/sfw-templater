@@ -5,7 +5,8 @@ namespace SFW\Templater;
 /**
  * Templates isolator.
  */
-class Isolator extends \stdClass
+#[\AllowDynamicProperties]
+class Isolator
 {
     /**
      * Templates will be part of this class.
