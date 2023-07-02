@@ -8,7 +8,7 @@ namespace SFW\Templater;
 class Minifier
 {
     /**
-     * Minifing HTML with a special regard for <script>, <style> and <t> tags.
+     * Minifing HTML with attention for <script>, <style> and <t> tags.
      *
      * Tag <t> is text which should not be touched.
      */

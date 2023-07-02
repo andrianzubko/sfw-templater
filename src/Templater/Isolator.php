@@ -10,8 +10,6 @@ class Isolator
 {
     /**
      * Templates will be part of this class.
-     *
-     * Special method (property if more correct) main() will be called if exists.
      */
     public function __construct(string $template, array $properties)
     {
@@ -20,14 +18,10 @@ class Isolator
         }
 
         require $template;
-
-        if (isset($this->main)) {
-            $this->main();
-        }
     }
 
     /**
-     * With this magic method you can call anonymous function as methods.
+     * With this magic method you can call anonymous functions in properties as methods.
      */
     public function __call(string $name, array $arguments): mixed
     {
