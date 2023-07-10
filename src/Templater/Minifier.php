@@ -10,17 +10,19 @@ class Minifier
     /**
      * Minifing HTML with attention for <script>, <style> and <t> tags.
      *
-     * Tag <t> is text which should not be touched.
+     * All inside tag <t> will not be touched.
      */
-    public static function minify(string $contents): string
+    public static function minify(string $contents, bool $minify = true): string
     {
-        $contents = preg_replace_callback('/<!--(.*?)-->/us',
-            fn($M) =>
-                $M[1] === 'noindex' || $M[1] === '/noindex'
-                    ? $M[0] : '',
+        if ($minify) {
+            $contents = preg_replace_callback('/<!--(.*?)-->/us',
+                fn($M) =>
+                    $M[1] === 'noindex' || $M[1] === '/noindex'
+                        ? $M[0] : '',
 
-            $contents
-        );
+                $contents
+            );
+        }
 
         $parts = [];
 
@@ -30,10 +32,12 @@ class Minifier
             if (preg_match('~^<(script|style|t)\b~ui', $part, $M)) {
                 if ($M[1] === 't' || $M[1] === 'T') {
                     $parts[] = substr($part, 3, -4);
-                } else {
+                } elseif ($minify) {
                     $parts[] = preg_replace('/\s+/u', ' ', $part);
+                } else {
+                    $parts[] = $part . "\n";
                 }
-            } else {
+            } elseif ($minify) {
                 $part = trim($part);
 
                 if ($part !== '') {
@@ -41,6 +45,8 @@ class Minifier
                         preg_replace('/\s+/u', ' ', $part)
                     );
                 }
+            } else {
+                $parts[] = $part;
             }
         }
 

@@ -70,7 +70,7 @@ class Templater
      *
      * Method main() (closure in property) will be called if exists in some template.
      */
-    public function transform(array $e, string $template, ?string $timezone = null): string
+    public function transform(array $e, string $template, bool $minify = true, ?string $timezone = null): string
     {
         if (isset($timezone)) {
             $timezonePrev = date_default_timezone_get();
@@ -106,6 +106,6 @@ class Templater
             date_default_timezone_set($timezonePrev);
         }
 
-        return Templater\Minifier::minify($contents);
+        return Templater\Minifier::minify($contents, $minify);
     }
 }
