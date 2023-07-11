@@ -73,24 +73,22 @@ class Templater
     public function transform(array $e, string $template, array $options = []): string
     {
         if (isset($options['timezone'])) {
-            $timezonePrev = date_default_timezone_get();
+            $tzPrev = date_default_timezone_get();
 
-            if ($timezonePrev === $options['timezone']) {
-                $timezonePrev = null;
+            if ($tzPrev === $options['timezone']) {
+                $tzPrev = null;
             } else {
                 date_default_timezone_set($options['timezone']);
             }
         } else {
-            $timezonePrev = null;
+            $tzPrev = null;
         }
 
         ob_start(fn() => null);
 
         $isolator = new Templater\Isolator($template,
             array_merge($this->properties,
-                [
-                    'e' => $e,
-                ]
+                ['e' => $e]
             )
         );
 
@@ -102,8 +100,8 @@ class Templater
 
         $contents = ob_get_clean();
 
-        if (isset($timezonePrev)) {
-            date_default_timezone_set($timezonePrev);
+        if (isset($tzPrev)) {
+            date_default_timezone_set($tzPrev);
         }
 
         if ($options['debug'] ?? false) {
