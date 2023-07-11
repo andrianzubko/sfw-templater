@@ -70,15 +70,15 @@ class Templater
      *
      * Method main() (closure in property) will be called if exists in some template.
      */
-    public function transform(array $e, string $template, bool $minify = true, ?string $timezone = null): string
+    public function transform(array $e, string $template, array $options = []): string
     {
-        if (isset($timezone)) {
+        if (isset($options['timezone'])) {
             $timezonePrev = date_default_timezone_get();
 
-            if ($timezonePrev === $timezone) {
+            if ($timezonePrev === $options['timezone']) {
                 $timezonePrev = null;
             } else {
-                date_default_timezone_set($timezone);
+                date_default_timezone_set($options['timezone']);
             }
         } else {
             $timezonePrev = null;
@@ -96,7 +96,7 @@ class Templater
 
         ob_clean();
 
-        if ($isolator->main ?? null instanceof \Closure) {
+        if (($isolator->main ?? null) instanceof \Closure) {
             $isolator->main();
         }
 
@@ -106,6 +106,10 @@ class Templater
             date_default_timezone_set($timezonePrev);
         }
 
-        return Templater\Minifier::minify($contents, $minify);
+        if ($options['debug'] ?? false) {
+            return (new Templater\Debugger())->transform($contents);
+        }
+
+        return (new Templater\Minifier())->transform($contents);
     }
 }

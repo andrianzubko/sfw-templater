@@ -8,48 +8,76 @@ namespace SFW\Templater;
 class Minifier
 {
     /**
-     * Minifing HTML with attention for <script>, <style> and <t> tags.
-     *
-     * All inside tag <t> will not be touched.
+     * Minifing all.
      */
-    public static function minify(string $contents, bool $minify = true): string
+    public function transform(string $contents): string
     {
-        if ($minify) {
-            $contents = preg_replace_callback('/<!--(.*?)-->/us',
-                fn($M) =>
-                    $M[1] === 'noindex' || $M[1] === '/noindex'
-                        ? $M[0] : '',
+        preg_match_all('~<(script|style|t)\b[^>]*>.*?</\1>~uis', $contents, $matches,
+            flags: PREG_OFFSET_CAPTURE | PREG_SET_ORDER
+        );
 
-                $contents
+        $chunks = [];
+
+        $pos = 0;
+
+        foreach ($matches as $M) {
+            $chunks[] = $this->between(
+                substr($contents, $pos, $M[0][1] - $pos)
+            );
+
+            $tag = strtolower($M[1][0]);
+
+            $chunks[] = $this->$tag($M[0][0]);
+
+            $pos = $M[0][1] + strlen($M[0][0]);
+        }
+
+        $chunks[] = $this->between(
+            substr($contents, $pos)
+        );
+
+        return implode($chunks);
+    }
+
+    /**
+     * Special tag <t> preserve all spaces inside, but removed itself.
+     */
+    protected function t(string $chunk): string
+    {
+        return substr($chunk, strpos($chunk, '>') + 1, -4);
+    }
+
+    /**
+     * Minifing javascript.
+     */
+    protected function script(string $chunk): string
+    {
+        return preg_replace('/\s+/u', ' ', $chunk);
+    }
+
+    /**
+     * Minifing styles.
+     */
+    protected function style(string $chunk): string
+    {
+        return preg_replace('/\s+/u', ' ', $chunk);
+    }
+
+    /**
+     * Minifing all between matches.
+     */
+    protected function between(string $chunk): string
+    {
+        $chunk = trim(
+            preg_replace('/<!--.*?-->/us', '', $chunk)
+        );
+
+        if ($chunk !== '') {
+            $chunk = str_replace('> <', '><',
+                preg_replace('/\s+/u', ' ', $chunk)
             );
         }
 
-        $parts = [];
-
-        $regexp = '~(<script\b[^>]*>.*?</script>|<style\b[^>]*>.*?</style>|<t>.*?</t>)~uis';
-
-        foreach (preg_split($regexp, $contents, -1, PREG_SPLIT_DELIM_CAPTURE) as $part) {
-            if (preg_match('~^<(script|style|t)\b~ui', $part, $M)) {
-                if ($M[1] === 't' || $M[1] === 'T') {
-                    $parts[] = substr($part, 3, -4);
-                } elseif ($minify) {
-                    $parts[] = preg_replace('/\s+/u', ' ', $part);
-                } else {
-                    $parts[] = $part . "\n";
-                }
-            } elseif ($minify) {
-                $part = trim($part);
-
-                if ($part !== '') {
-                    $parts[] = str_replace('> <', '><',
-                        preg_replace('/\s+/u', ' ', $part)
-                    );
-                }
-            } else {
-                $parts[] = $part;
-            }
-        }
-
-        return implode($parts);
+        return $chunk;
     }
 }
