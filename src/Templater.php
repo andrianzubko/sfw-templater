@@ -18,29 +18,16 @@ class Templater
     public function __construct()
     {
         $this->properties = [
-            's' => function (?string $string): void {
-                echo $string ?? '';
+            'h' => function (?string $string): string {
+                return htmlspecialchars($string ?? '', ENT_COMPAT, 'UTF-8');
             },
-            'h' => function (?string $string): void {
-                echo htmlspecialchars($string ?? '', ENT_COMPAT, 'UTF-8');
+            'u' => function (?string $string): string {
+                return urlencode($string ?? '');
             },
-            'b' => function (?string $string): void {
-                echo nl2br(htmlspecialchars($string ?? '', ENT_COMPAT, 'UTF-8'));
-            },
-            'u' => function (?string $string): void {
-                echo urlencode($string ?? '');
-            },
-            'j' => function (?string $string): void {
-                echo str_replace(
+            'j' => function (?string $string): string {
+                return str_replace(
                     ['\\','/',"\n","\r",' ','"',"'",'<','>','&',"\xe2\x80\xa8","\xe2\x80\xa9"],
                         ['\\\\','\\/','\\n','\\r','\\x20','\\x22','\\x27','\\x3C','\\x3E','\\x26','\\u2028','\\u2029'],
-                            $string ?? ''
-                );
-            },
-            'l' => function (?string $string): void {
-                echo str_replace(
-                    ['\\','/',"\n","\r",'"'],
-                        ['\\\\','\\/','\\n','\\r','\\x22'],
                             $string ?? ''
                 );
             },
