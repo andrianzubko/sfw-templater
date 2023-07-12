@@ -28,6 +28,11 @@ class Debugger extends Minifier
      */
     protected function between(string $chunk): string
     {
+        $chunk = preg_replace_callback('~<[a-z][^>]+>~ui',
+            fn($M) => preg_replace('/\s+/u', ' ', $M[0]),
+                $chunk
+        );
+
         $chunk = preg_replace('/>(\s+)</u', '><!--\1--><', $chunk);
 
         $chunk = preg_replace('/(^\s+|\s+$)/u', '<!--\1-->', $chunk);
