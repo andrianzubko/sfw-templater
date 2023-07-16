@@ -91,6 +91,10 @@ class Templater
             date_default_timezone_set($tzPrev);
         }
 
+        if (!($options['minify'] ?? true)) {
+            return $contents;
+        }
+
         if ($options['debug'] ?? false) {
             return (new Templater\Debugger())->transform($contents);
         }
