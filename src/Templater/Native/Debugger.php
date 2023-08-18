@@ -1,6 +1,6 @@
 <?php
 
-namespace SFW\Templater;
+namespace SFW\Templater\Native;
 
 /**
  * HTML debugger.
@@ -8,7 +8,7 @@ namespace SFW\Templater;
 class Debugger extends Minifier
 {
     /**
-     * Leave javascripts as is.
+     * Leave javascript as is.
      */
     protected function script(string $chunk): string
     {
@@ -37,8 +37,6 @@ class Debugger extends Minifier
 
         $chunk = preg_replace('/(^\s+|\s+$)/u', '<!--\1-->', $chunk);
 
-        $chunk = str_replace('--><!--', '       ', $chunk);
-
-        return $chunk;
+        return str_replace('--><!--', '       ', $chunk);
     }
 }

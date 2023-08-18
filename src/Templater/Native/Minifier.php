@@ -1,6 +1,6 @@
 <?php
 
-namespace SFW\Templater;
+namespace SFW\Templater\Native;
 
 /**
  * HTML minifier.
@@ -8,7 +8,7 @@ namespace SFW\Templater;
 class Minifier
 {
     /**
-     * Minifing all.
+     * Minifying all.
      */
     public function transform(string $contents): string
     {
@@ -22,14 +22,14 @@ class Minifier
 
         foreach ($matches as $M) {
             $chunks[] = $this->between(
-                substr($contents, $pos, $M[0][1] - $pos)
+                substr($contents, $pos, (int) $M[0][1] - $pos)
             );
 
             $tag = strtolower($M[1][0]);
 
             $chunks[] = $this->$tag($M[0][0]);
 
-            $pos = $M[0][1] + strlen($M[0][0]);
+            $pos = (int) $M[0][1] + strlen($M[0][0]);
         }
 
         $chunks[] = $this->between(
@@ -48,7 +48,7 @@ class Minifier
     }
 
     /**
-     * Minifing javascript.
+     * Minifying javascript.
      */
     protected function script(string $chunk): string
     {
@@ -56,7 +56,7 @@ class Minifier
     }
 
     /**
-     * Minifing styles.
+     * Minifying styles.
      */
     protected function style(string $chunk): string
     {
@@ -64,7 +64,7 @@ class Minifier
     }
 
     /**
-     * Minifing all between matches.
+     * Minifying all between matches.
      */
     protected function between(string $chunk): string
     {

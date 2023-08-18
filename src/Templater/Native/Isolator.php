@@ -1,6 +1,6 @@
 <?php
 
-namespace SFW\Templater;
+namespace SFW\Templater\Native;
 
 /**
  * Templates isolator.
