@@ -12,8 +12,8 @@ class Minifier
      */
     public function transform(string $contents): string
     {
-        preg_match_all('~<(script|style|t)\b[^>]*>.*?</\1>~uis', $contents, $matches,
-            flags: PREG_OFFSET_CAPTURE | PREG_SET_ORDER
+        preg_match_all('~<(script|style|t)\b[^>]*>.*?</\1>~uis',
+            $contents, $matches, flags: PREG_OFFSET_CAPTURE | PREG_SET_ORDER
         );
 
         $chunks = [];
