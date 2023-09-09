@@ -8,7 +8,7 @@ namespace SFW\Templater;
 class Exception extends \Exception
 {
     /**
-     * Correct file and line.
+     * Optional file and line.
      */
     public function __construct(string $message, ?string $file = null, ?int $line = null)
     {
@@ -18,16 +18,6 @@ class Exception extends \Exception
             $this->file = $file;
 
             $this->line = $line;
-        } else {
-            foreach ($this->getTrace() as $trace) {
-                if (!str_starts_with($trace['file'], dirname(__DIR__))) {
-                    $this->file = $trace['file'];
-
-                    $this->line = $trace['line'];
-
-                    break;
-                }
-            }
         }
     }
 }
