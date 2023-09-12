@@ -32,7 +32,7 @@ class Native extends Processor
     /**
      * Transforming template to page.
      *
-     * @throws Exception
+     * @throws RuntimeException
      */
     public function transform(array $e, string $template): string
     {
@@ -57,18 +57,13 @@ class Native extends Processor
 
             $contents = ob_get_clean();
         } catch (
-            \Exception | \Error $error
+            \Throwable $error
         ) {
             ob_end_clean();
 
-            throw new Exception(
-                $error instanceof \Error
-                    ? sprintf('PHP %s: %s', $error::class, $error->getMessage())
-                        : $error->getMessage(),
-
-                $error->getFile(),
-                $error->getLine()
-            );
+            throw (new RuntimeException($error->getMessage()))
+                ->setFile($error->getFile())
+                ->setLine($error->getLine());
         }
 
         if ($this->options['minify'] ?? true) {

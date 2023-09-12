@@ -11,7 +11,7 @@ abstract class Processor
      * Default properties.
      */
     protected array $properties = [];
-    
+
     /**
      * Timer of processed templates.
      */
@@ -43,7 +43,7 @@ abstract class Processor
     /**
      * Transforming template to page.
      *
-     * @throws Exception
+     * @throws InvalidArgumentException|RuntimeException
      */
     abstract public function transform(array $e, string $template): string;
 

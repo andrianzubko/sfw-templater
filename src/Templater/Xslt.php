@@ -20,7 +20,7 @@ class Xslt extends Processor
     /**
      * Transforming template to page.
      *
-     * @throws Exception
+     * @throws InvalidArgumentException|RuntimeException
      */
     public function transform(array $e, string $template): string
     {
@@ -30,13 +30,13 @@ class Xslt extends Processor
             $doc = new \DOMDocument;
 
             if ($doc->load($this->options['dir'] . "/$template", LIBXML_NOCDATA) === false) {
-                throw new Exception('XSL loading error');
+                throw new RuntimeException('XSL loading error');
             }
 
             $processor = new \XSLTProcessor;
 
             if ($processor->importStylesheet($doc) === false) {
-                throw new Exception('XSL import error');
+                throw new RuntimeException('XSL import error');
             }
 
             $this->processors[$template] = $processor;
@@ -54,7 +54,7 @@ class Xslt extends Processor
         $contents = $this->processors[$template]->transformToXML($sxe) ?? '';
 
         if ($contents === false) {
-            throw new Exception('XSL transform error');
+            throw new RuntimeException('XSL transform error');
         }
 
         self::$timer += gettimeofday(true) - $timer;

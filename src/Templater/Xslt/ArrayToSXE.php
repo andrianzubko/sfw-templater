@@ -2,8 +2,6 @@
 
 namespace SFW\Templater\Xslt;
 
-use SFW\Templater\Exception;
-
 /**
  * Transformer.
  */
@@ -12,7 +10,7 @@ class ArrayToSXE
     /**
      * Transforming array to SimpleXMLElement.
      *
-     * @throws Exception
+     * @throws \SFW\Templater\InvalidArgumentException
      */
     public static function transform(
         array $array,
@@ -28,7 +26,7 @@ class ArrayToSXE
                     new \DOMElement($root)
                 );
             } catch (\DOMException $error) {
-                throw new Exception($error->getMessage());
+                throw new \SFW\Templater\InvalidArgumentException($error->getMessage());
             }
 
             $sxe = simplexml_import_dom($dom);
