@@ -2,4 +2,4 @@
 
 namespace SFW\Templater;
 
-class InvalidArgumentException extends Exception {}
+class InvalidArgumentException extends \SFW\InvalidArgumentException {}
