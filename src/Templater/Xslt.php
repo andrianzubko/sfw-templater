@@ -20,7 +20,8 @@ class Xslt extends Processor
     /**
      * Transforming template to page.
      *
-     * @throws InvalidArgumentException|RuntimeException
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
      */
     public function transform(array $e, string $template): string
     {

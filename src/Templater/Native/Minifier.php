@@ -32,9 +32,7 @@ class Minifier
             $pos = (int) $M[0][1] + strlen($M[0][0]);
         }
 
-        $chunks[] = $this->between(
-            substr($contents, $pos)
-        );
+        $chunks[] = $this->between(substr($contents, $pos));
 
         return implode($chunks);
     }

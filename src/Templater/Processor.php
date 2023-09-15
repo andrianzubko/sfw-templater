@@ -43,7 +43,8 @@ abstract class Processor
     /**
      * Transforming template to page.
      *
-     * @throws InvalidArgumentException|RuntimeException
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
      */
     abstract public function transform(array $e, string $template): string;
 

@@ -13,19 +13,31 @@ class Native extends Processor
     public function __construct(protected array $options = [])
     {
         $this->properties['h'] = function (?string $string): string {
-            return htmlspecialchars($string ?? '', ENT_COMPAT, 'UTF-8');
+            if (isset($string)) {
+                return htmlspecialchars($string, ENT_COMPAT, 'UTF-8');
+            }
+
+            return '';
         };
 
         $this->properties['u'] = function (?string $string): string {
-            return urlencode($string ?? '');
+            if (isset($string)) {
+                return urlencode($string);
+            }
+
+            return '';
         };
 
         $this->properties['j'] = function (?string $string): string {
-            return str_replace(
-                ['\\','/',"\n","\r",' ','"',"'",'<','>','&',"\xe2\x80\xa8","\xe2\x80\xa9"],
-                ['\\\\','\\/','\\n','\\r','\\x20','\\x22','\\x27','\\x3C','\\x3E','\\x26','\\u2028','\\u2029'],
-                    $string ?? ''
-            );
+            if (isset($string)) {
+                return str_replace(
+                    ['\\','/',"\n","\r",' ','"',"'",'<','>','&',"\xe2\x80\xa8","\xe2\x80\xa9"],
+                    ['\\\\','\\/','\\n','\\r','\\x20','\\x22','\\x27','\\x3C','\\x3E','\\x26','\\u2028','\\u2029'],
+                        $string
+                );
+            }
+
+            return '';
         };
     }
 
@@ -38,13 +50,14 @@ class Native extends Processor
     {
         $timer = gettimeofday(true);
 
+        $this->properties['e'] = $e;
+
         try {
             ob_start(fn() => null);
 
-            $isolator = new Native\Isolator($this->options['dir'] . "/$template",
-                array_merge($this->properties,
-                    ['e' => $e]
-                )
+            $isolator = new Native\Isolator(
+                $this->options['dir'] . '/' . $template,
+                    $this->properties
             );
 
             ob_clean();
@@ -52,7 +65,7 @@ class Native extends Processor
             if (isset($isolator->main)
                 && $isolator->main instanceof \Closure
             ) {
-                $isolator->main();
+                ($isolator->main)();
             }
 
             $contents = ob_get_clean();

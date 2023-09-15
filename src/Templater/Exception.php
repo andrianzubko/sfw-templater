@@ -2,4 +2,4 @@
 
 namespace SFW\Templater;
 
-class Exception extends \SFW\Exception {}
+interface Exception extends \SFW\Exception {}
