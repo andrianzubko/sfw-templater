@@ -35,9 +35,10 @@ abstract class Processor
      */
     public function addProperties(array $properties): void
     {
-        foreach ($properties as $name => $value) {
-            $this->properties[$name] = $value;
-        }
+        $this->properties = [
+            ...$this->properties,
+            ...$properties
+        ];
     }
 
     /**

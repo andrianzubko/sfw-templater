@@ -2,6 +2,8 @@
 
 namespace SFW\Templater;
 
+use SFW\RuntimeException;
+
 /**
  * Native templater.
  */
@@ -56,8 +58,8 @@ class Native extends Processor
             ob_start(fn() => null);
 
             $isolator = new Native\Isolator(
-                $this->options['dir'] . '/' . $template,
-                    $this->properties
+                $this->options['dir'] . "/$template",
+                $this->properties
             );
 
             ob_clean();
