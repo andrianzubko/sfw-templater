@@ -2,4 +2,6 @@
 
 namespace SFW\Templater;
 
-class RuntimeException extends \SFW\RuntimeException implements Exception {}
+class RuntimeException extends \SFW\RuntimeException implements Exception
+{
+}

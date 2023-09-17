@@ -25,20 +25,24 @@ abstract class Processor
     /**
      * Adding property.
      */
-    public function addProperty(string $name, mixed $value): void
+    public function addProperty(string $name, mixed $value): self
     {
         $this->properties[$name] = $value;
+
+        return $this;
     }
 
     /**
      * Adding properties.
      */
-    public function addProperties(array $properties): void
+    public function addProperties(array $properties): self
     {
         $this->properties = [
             ...$this->properties,
             ...$properties
         ];
+
+        return $this;
     }
 
     /**

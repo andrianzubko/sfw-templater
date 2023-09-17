@@ -15,7 +15,9 @@ class Xslt extends Processor
     /**
      * Passing parameters to properties.
      */
-    public function __construct(protected array $options = []) {}
+    public function __construct(protected array $options = [])
+    {
+    }
 
     /**
      * Transforming template to page.
