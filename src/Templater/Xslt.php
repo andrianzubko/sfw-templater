@@ -28,13 +28,13 @@ class Xslt extends Processor
         $timer = gettimeofday(true);
 
         if (!isset($this->processors[$template])) {
-            $doc = new \DOMDocument;
+            $doc = new \DOMDocument();
 
             if ($doc->load($this->options['dir'] . "/$template", LIBXML_NOCDATA) === false) {
                 throw new RuntimeException('XSL loading error');
             }
 
-            $processor = new \XSLTProcessor;
+            $processor = new \XSLTProcessor();
 
             if ($processor->importStylesheet($doc) === false) {
                 throw new RuntimeException('XSL import error');
