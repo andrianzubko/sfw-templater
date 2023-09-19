@@ -12,7 +12,7 @@ class Minifier
      */
     public function transform(string $contents): string
     {
-        preg_match_all('~<(script|style|t)\b[^>]*>.*?</\1>~uis',
+        preg_match_all('~<(script|style|t)\b[^>]*+>.*?</\1>~is',
             $contents, $matches, flags: PREG_OFFSET_CAPTURE | PREG_SET_ORDER
         );
 
@@ -50,7 +50,7 @@ class Minifier
      */
     protected function script(string $chunk): string
     {
-        return preg_replace('/\s+/u', ' ', $chunk);
+        return preg_replace("/(?: |\t|\n|\r|\0|\x0B|\x0C|\u{A0}|\u{FEFF})+/S", ' ', $chunk);
     }
 
     /**
@@ -58,7 +58,7 @@ class Minifier
      */
     protected function style(string $chunk): string
     {
-        return preg_replace('/\s+/u', ' ', $chunk);
+        return preg_replace("/(?: |\t|\n|\r|\0|\x0B|\x0C|\u{A0}|\u{FEFF})+/S", ' ', $chunk);
     }
 
     /**
@@ -66,16 +66,16 @@ class Minifier
      */
     protected function between(string $chunk): string
     {
-        $chunk = trim(
-            preg_replace('/<!--.*?-->/us', '', $chunk)
-        );
+        $chunk = preg_replace('/<!--.*?-->/s', '', $chunk);
 
-        if ($chunk !== '') {
-            $chunk = str_replace('> <', '><',
-                preg_replace('/\s+/u', ' ', $chunk)
-            );
+        $chunk = trim($chunk);
+
+        if ($chunk === '') {
+            return '';
         }
 
-        return $chunk;
+        $chunk = preg_replace("/(?: |\t|\n|\r|\0|\x0B|\x0C|\u{A0}|\u{FEFF})+/S", ' ', $chunk);
+
+        return str_replace('> <', '><', $chunk);
     }
 }
