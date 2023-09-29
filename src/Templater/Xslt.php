@@ -43,17 +43,21 @@ class Xslt extends Processor
         if (!isset($this->processors[$template])) {
             $doc = new \DOMDocument();
 
-            if ($doc->load($template, LIBXML_NOCDATA) === false) {
+            if (!$doc->load($template, LIBXML_NOCDATA)) {
                 throw new LogicException('XSL loading error');
             }
 
             $processor = new \XSLTProcessor();
 
-            if ($processor->importStylesheet($doc) === false) {
+            if (!$processor->importStylesheet($doc)) {
                 throw new LogicException('XSL import error');
             }
 
-            $processor->setParameter('', $this->options['properties']);
+            if ($this->options['properties']
+                && !$processor->setParameter('', $this->options['properties'])
+            ) {
+                throw new LogicException('Unable set parameters to XSL');
+            }
 
             $this->processors[$template] = $processor;
         }
