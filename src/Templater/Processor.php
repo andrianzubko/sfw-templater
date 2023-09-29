@@ -23,7 +23,7 @@ abstract class Processor
      * @throws InvalidArgumentException
      * @throws LogicException
      */
-    abstract public function transform(array|object $context, string $template): string;
+    abstract public function transform(array|object|null $context, string $template): string;
 
     /**
      * Getting timer of processed templates.

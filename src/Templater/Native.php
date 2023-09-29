@@ -52,7 +52,7 @@ class Native extends Processor
      *
      * @throws LogicException
      */
-    public function transform(array|object $context, string $template): string
+    public function transform(array|object|null $context, string $template): string
     {
         $timer = gettimeofday(true);
 
