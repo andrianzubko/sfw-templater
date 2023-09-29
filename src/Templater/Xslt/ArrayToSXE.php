@@ -27,8 +27,8 @@ class ArrayToSXE
                 $dom->appendChild(
                     new \DOMElement($root)
                 );
-            } catch (\DOMException $error) {
-                throw new InvalidArgumentException($error->getMessage());
+            } catch (\DOMException $e) {
+                throw new InvalidArgumentException($e->getMessage());
             }
 
             $sxe = simplexml_import_dom($dom);

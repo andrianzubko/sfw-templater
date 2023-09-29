@@ -66,9 +66,9 @@ class Minifier
      */
     protected function between(string $chunk): string
     {
-        $chunk = preg_replace('/<!--.*?-->/s', '', $chunk);
-
-        $chunk = trim($chunk);
+        $chunk = trim(
+            preg_replace('/<!--.*?-->/s', '', $chunk)
+        );
 
         if ($chunk === '') {
             return '';

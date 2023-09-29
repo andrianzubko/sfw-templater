@@ -8,11 +8,6 @@ namespace SFW\Templater;
 abstract class Processor
 {
     /**
-     * Default properties.
-     */
-    protected array $properties = [];
-
-    /**
      * Timer of processed templates.
      */
     protected static float $timer = 0;
@@ -23,35 +18,12 @@ abstract class Processor
     protected static int $counter = 0;
 
     /**
-     * Adding property.
-     */
-    public function addProperty(string $name, mixed $value): self
-    {
-        $this->properties[$name] = $value;
-
-        return $this;
-    }
-
-    /**
-     * Adding properties.
-     */
-    public function addProperties(array $properties): self
-    {
-        $this->properties = [
-            ...$this->properties,
-            ...$properties
-        ];
-
-        return $this;
-    }
-
-    /**
      * Transforming template to page.
      *
      * @throws InvalidArgumentException
-     * @throws RuntimeException
+     * @throws LogicException
      */
-    abstract public function transform(array $e, string $template): string;
+    abstract public function transform(array|object $context, string $template): string;
 
     /**
      * Getting timer of processed templates.

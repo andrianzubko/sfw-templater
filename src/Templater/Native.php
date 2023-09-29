@@ -8,11 +8,17 @@ namespace SFW\Templater;
 class Native extends Processor
 {
     /**
-     * Passing parameters to properties and initializing default properties.
+     * Passes parameters to properties and initializes default properties.
      */
     public function __construct(protected array $options = [])
     {
-        $this->properties['h'] = function (?string $string): string {
+        $this->options['minify'] ??= true;
+
+        $this->options['debug'] ??= false;
+
+        $this->options['properties'] ??= [];
+
+        $this->options['properties']['h'] ??= function (?string $string): string {
             if (!isset($string)) {
                 return '';
             }
@@ -20,7 +26,7 @@ class Native extends Processor
             return htmlspecialchars($string, ENT_COMPAT, 'UTF-8');
         };
 
-        $this->properties['u'] = function (?string $string): string {
+        $this->options['properties']['u'] ??= function (?string $string): string {
             if (!isset($string)) {
                 return '';
             }
@@ -28,7 +34,7 @@ class Native extends Processor
             return urlencode($string);
         };
 
-        $this->properties['j'] = function (?string $string): string {
+        $this->options['properties']['j'] ??= function (?string $string): string {
             if (!isset($string)) {
                 return '';
             }
@@ -42,22 +48,25 @@ class Native extends Processor
     }
 
     /**
-     * Transforming template to page.
+     * Transforms template to page.
      *
-     * @throws RuntimeException
+     * @throws LogicException
      */
-    public function transform(array $e, string $template): string
+    public function transform(array|object $context, string $template): string
     {
         $timer = gettimeofday(true);
 
-        $this->properties['e'] = $e;
+        if (isset($this->options['dir'])
+            && $template[0] !== '/'
+        ) {
+            $template = $this->options['dir'] . '/' . $template;
+        }
 
         try {
             ob_start(fn() => null);
 
             $isolator = new Native\Isolator(
-                $this->options['dir'] . "/$template",
-                $this->properties
+                $this->options['properties'], (array) $context, $template
             );
 
             ob_clean();
@@ -69,18 +78,20 @@ class Native extends Processor
             }
 
             $contents = ob_get_clean();
-        } catch (
-            \Throwable $error
-        ) {
+        } catch (\Throwable $e) {
             ob_end_clean();
 
-            throw (new RuntimeException($error->getMessage()))
-                ->setFile($error->getFile())
-                ->setLine($error->getLine());
+            if ($e instanceof \Exception) {
+                throw $e;
+            } else {
+                throw (new LogicException($e->getMessage()))
+                    ->setFile($e->getFile())
+                    ->setLine($e->getLine());
+            }
         }
 
-        if ($this->options['minify'] ?? true) {
-            if ($this->options['debug'] ?? false) {
+        if ($this->options['minify']) {
+            if ($this->options['debug']) {
                 $minifier = new Native\Debugger();
             } else {
                 $minifier = new Native\Minifier();
@@ -93,6 +104,6 @@ class Native extends Processor
 
         self::$counter += 1;
 
-        return rtrim($contents) . "\n";
+        return $contents . "\n";
     }
 }

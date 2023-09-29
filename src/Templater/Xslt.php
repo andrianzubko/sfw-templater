@@ -13,51 +13,59 @@ class Xslt extends Processor
     protected array $processors;
 
     /**
-     * Passing parameters to properties.
+     * Passes parameters to properties and initializes default properties.
      */
     public function __construct(protected array $options = [])
     {
+        $this->options['root'] ??= 'root';
+
+        $this->options['item'] ??= 'item';
+
+        $this->options['properties'] ??= [];
     }
 
     /**
      * Transforming template to page.
      *
      * @throws InvalidArgumentException
-     * @throws RuntimeException
+     * @throws LogicException
      */
-    public function transform(array $e, string $template): string
+    public function transform(array|object $context, string $template): string
     {
         $timer = gettimeofday(true);
+
+        if (isset($this->options['dir'])
+            && $template[0] !== '/'
+        ) {
+            $template = $this->options['dir'] . '/' . $template;
+        }
 
         if (!isset($this->processors[$template])) {
             $doc = new \DOMDocument();
 
-            if ($doc->load($this->options['dir'] . "/$template", LIBXML_NOCDATA) === false) {
-                throw new RuntimeException('XSL loading error');
+            if ($doc->load($template, LIBXML_NOCDATA) === false) {
+                throw new LogicException('XSL loading error');
             }
 
             $processor = new \XSLTProcessor();
 
             if ($processor->importStylesheet($doc) === false) {
-                throw new RuntimeException('XSL import error');
+                throw new LogicException('XSL import error');
             }
+
+            $processor->setParameter('', $this->options['properties']);
 
             $this->processors[$template] = $processor;
         }
 
-        if ($this->properties) {
-            $this->processors[$template]->setParameter('', $this->properties);
-        }
-
-        $sxe = Xslt\ArrayToSXE::transform($e,
-            $this->options['root'] ?? 'root',
-            $this->options['item'] ?? 'item'
+        $sxe = Xslt\ArrayToSXE::transform(
+            (array) $context, $this->options['root'], $this->options['item']
         );
 
         $contents = $this->processors[$template]->transformToXML($sxe) ?? '';
 
         if ($contents === false) {
-            throw new RuntimeException('XSL transform error');
+            throw new LogicException('XSL transform error');
         }
 
         self::$timer += gettimeofday(true) - $timer;
