@@ -8,7 +8,7 @@ use SFW\Templater\LogicException;
  * Templates isolator.
  */
 #[\AllowDynamicProperties]
-class Isolator
+class Isolator extends \stdClass
 {
     /**
      * Templates will be part of this class.
