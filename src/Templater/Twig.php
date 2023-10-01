@@ -21,17 +21,15 @@ class Twig extends Processor
     {
         parent::__construct($options);
 
+        $this->options['minify'] ??= true;
+
+        $this->options['debug'] ??= false;
+
         try {
             $loader = new \Twig\Loader\FilesystemLoader($this->options['dir']);
-        } catch (\Twig\Error\LoaderError $e) {
-            throw (new LogicException($e->getMessage()))
-                ->setFile($e->getFile())
-                ->setLine($e->getLine());
-        }
 
-        $this->twig = new \Twig\Environment($loader,
-            [
-                'debug' => $this->options['debug'] ?? false,
+            $this->twig = new \Twig\Environment($loader, [
+                'debug' => $this->options['debug'],
 
                 'cache' => $this->options['cache'] ?? false,
 
@@ -40,8 +38,16 @@ class Twig extends Processor
                 'strict_variables' => $this->options['strict'] ?? true,
 
                 'autoescape' => $this->options['autoescape'] ?? 'html',
-            ]
-        );
+            ]);
+        } catch (\LogicException $e) {
+            throw (new LogicException($e->getMessage()))
+                ->setFile($e->getFile())
+                ->setLine($e->getLine());
+        } catch (\Throwable $e) {
+            throw (new RuntimeException($e->getMessage()))
+                ->setFile($e->getFile())
+                ->setLine($e->getLine());
+        }
 
         if (isset($this->options['globals'])) {
             foreach ($this->options['globals'] as $name => $value) {
@@ -69,18 +75,22 @@ class Twig extends Processor
 
         try {
             $contents = $this->twig->render($template, (array) $context);
-        } catch (
-            \Twig\Error\LoaderError | \Twig\Error\SyntaxError $e
-        ) {
+        } catch (\LogicException $e) {
             throw (new LogicException($e->getMessage()))
                 ->setFile($e->getFile())
                 ->setLine($e->getLine());
-        } catch (
-            \Twig\Error\RuntimeError $e
-        ) {
+        } catch (\Throwable $e) {
             throw (new RuntimeException($e->getMessage()))
                 ->setFile($e->getFile())
                 ->setLine($e->getLine());
+        }
+
+        if ($this->options['minify']) {
+            if ($this->options['debug']) {
+                $contents = Debugger::transform($contents);
+            } else {
+                $contents = Minifier::transform($contents);
+            }
         }
 
         self::$timer += gettimeofday(true) - $timer;

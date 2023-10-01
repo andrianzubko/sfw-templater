@@ -56,10 +56,9 @@ class Xslt extends Processor
             $this->processors[$template] = $processor;
         }
 
-        $sxe = Xslt\ArrayToSXE::transform([
-            ...$this->options['globals'],
-            ...(array) $context
-        ], $this->options['root'], $this->options['item']);
+        $context = [...$this->options['globals'], ...(array) $context];
+
+        $sxe = Xslt\ArrayToSXE::transform($context, $this->options['root'], $this->options['item']);
 
         $contents = $this->processors[$template]->transformToXML($sxe) ?? '';
 

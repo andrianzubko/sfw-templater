@@ -31,16 +31,18 @@ class Isolator extends \stdClass
      */
     public function __call(string $name, array $arguments): mixed
     {
-        if (isset($this->$name)
-            && $this->$name instanceof \Closure
-        ) {
+        try {
             return ($this->$name)(...$arguments);
+        } catch (\Throwable $e) {
+            if ($e->getFile() === __FILE__) {
+                throw (new LogicException($e->getMessage()))
+                    ->setFile($e->getTrace()[0]['file'])
+                    ->setLine($e->getTrace()[0]['line']);
+            } else {
+                throw (new LogicException($e->getMessage()))
+                    ->setFile($e->getFile())
+                    ->setLine($e->getLine());
+            }
         }
-
-        $trace = debug_backtrace(2)[0];
-
-        throw (new LogicException("Property '$name' is not closure"))
-            ->setFile($trace['file'])
-            ->setLine($trace['line']);
     }
 }

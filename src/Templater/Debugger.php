@@ -1,6 +1,6 @@
 <?php
 
-namespace SFW\Templater\Native;
+namespace SFW\Templater;
 
 /**
  * HTML debugger.
@@ -10,7 +10,7 @@ class Debugger extends Minifier
     /**
      * Leave javascript as is.
      */
-    protected function script(string $chunk): string
+    protected static function script(string $chunk): string
     {
         return $chunk;
     }
@@ -18,7 +18,7 @@ class Debugger extends Minifier
     /**
      * Leave styles as is.
      */
-    protected function style(string $chunk): string
+    protected static function style(string $chunk): string
     {
         return $chunk;
     }
@@ -26,7 +26,7 @@ class Debugger extends Minifier
     /**
      * Leave comments and comment spaces that Minifier cuts out.
      */
-    protected function between(string $chunk): string
+    protected static function between(string $chunk): string
     {
         $chunk = preg_replace_callback('~<[a-z][^>]+>~i',
             fn($M) => preg_replace('/\s+/u', ' ', $M[0]),

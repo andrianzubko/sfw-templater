@@ -1,6 +1,6 @@
 <?php
 
-namespace SFW\Templater\Native;
+namespace SFW\Templater;
 
 /**
  * HTML minifier.
@@ -10,7 +10,7 @@ class Minifier
     /**
      * Minifying all.
      */
-    public function transform(string $contents): string
+    public static function transform(string $contents): string
     {
         preg_match_all('~<(script|style|t)\b[^>]*+>.*?</\1>~is',
             $contents, $matches, flags: PREG_OFFSET_CAPTURE | PREG_SET_ORDER
@@ -21,18 +21,20 @@ class Minifier
         $pos = 0;
 
         foreach ($matches as $M) {
-            $chunks[] = $this->between(
+            $chunks[] = self::between(
                 substr($contents, $pos, (int) $M[0][1] - $pos)
             );
 
             $tag = strtolower($M[1][0]);
 
-            $chunks[] = $this->$tag($M[0][0]);
+            $chunks[] = self::$tag($M[0][0]);
 
             $pos = (int) $M[0][1] + strlen($M[0][0]);
         }
 
-        $chunks[] = $this->between(substr($contents, $pos));
+        $chunks[] = self::between(substr($contents, $pos));
+
+        $chunks[] = "\n";
 
         return implode($chunks);
     }
@@ -40,7 +42,7 @@ class Minifier
     /**
      * Special tag <t> preserve all spaces inside, but removed itself.
      */
-    protected function t(string $chunk): string
+    protected static function t(string $chunk): string
     {
         return substr($chunk, strpos($chunk, '>') + 1, -4);
     }
@@ -48,7 +50,7 @@ class Minifier
     /**
      * Minifying javascript.
      */
-    protected function script(string $chunk): string
+    protected static function script(string $chunk): string
     {
         return preg_replace("/(?: |\t|\n|\r|\0|\x0B|\x0C|\u{A0}|\u{FEFF})+/S", ' ', $chunk);
     }
@@ -56,7 +58,7 @@ class Minifier
     /**
      * Minifying styles.
      */
-    protected function style(string $chunk): string
+    protected static function style(string $chunk): string
     {
         return preg_replace("/(?: |\t|\n|\r|\0|\x0B|\x0C|\u{A0}|\u{FEFF})+/S", ' ', $chunk);
     }
@@ -64,7 +66,7 @@ class Minifier
     /**
      * Minifying all between matches.
      */
-    protected function between(string $chunk): string
+    protected static function between(string $chunk): string
     {
         $chunk = trim(
             preg_replace('/<!--.*?-->/s', '', $chunk)

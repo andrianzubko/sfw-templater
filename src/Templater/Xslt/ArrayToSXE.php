@@ -41,9 +41,7 @@ class ArrayToSXE
                 } elseif (
                     $element instanceof \SimpleXMLElement
                 ) {
-                    $node = dom_import_simplexml(
-                        $sxe->addChild($item)
-                    );
+                    $node = dom_import_simplexml($sxe->addChild($item));
 
                     foreach (dom_import_simplexml($element)->childNodes as $child) {
                         $node->appendChild(
@@ -63,9 +61,7 @@ class ArrayToSXE
                 } elseif (
                     $element instanceof \SimpleXMLElement
                 ) {
-                    $node = dom_import_simplexml(
-                        $sxe->addChild($key)
-                    );
+                    $node = dom_import_simplexml($sxe->addChild($key));
 
                     foreach (dom_import_simplexml($element)->childNodes as $child) {
                         $node->appendChild(

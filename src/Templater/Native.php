@@ -81,29 +81,23 @@ class Native extends Processor
         } catch (\Throwable $e) {
             ob_end_clean();
 
-            if ($e instanceof Exception) {
-                throw $e;
-            } else {
-                throw (new LogicException($e->getMessage()))
-                    ->setFile($e->getFile())
-                    ->setLine($e->getLine());
-            }
+            throw (new LogicException($e->getMessage()))
+                ->setFile($e->getFile())
+                ->setLine($e->getLine());
         }
 
         if ($this->options['minify']) {
             if ($this->options['debug']) {
-                $minifier = new Native\Debugger();
+                $contents = Debugger::transform($contents);
             } else {
-                $minifier = new Native\Minifier();
+                $contents = Minifier::transform($contents);
             }
-
-            $contents = $minifier->transform($contents);
         }
 
         self::$timer += gettimeofday(true) - $timer;
 
         self::$counter += 1;
 
-        return $contents . "\n";
+        return $contents;
     }
 }
