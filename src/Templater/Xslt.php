@@ -13,15 +13,19 @@ class Xslt extends Processor
     protected array $processors;
 
     /**
-     * Passes parameters to properties and initializes default properties.
+     * Passes parameters to properties and checking some.
+     *
+     * @throws InvalidArgumentException
      */
-    public function __construct(protected array $options = [])
+    public function __construct(array $options = [])
     {
+        parent::__construct($options);
+
         $this->options['root'] ??= 'root';
 
         $this->options['item'] ??= 'item';
 
-        $this->options['properties'] ??= [];
+        $this->options['globals'] ??= [];
     }
 
     /**
@@ -30,15 +34,11 @@ class Xslt extends Processor
      * @throws InvalidArgumentException
      * @throws LogicException
      */
-    public function transform(array|object|null $context, string $template): string
+    public function transform(string $template, array|object|null $context = null): string
     {
         $timer = gettimeofday(true);
 
-        if (isset($this->options['dir'])
-            && $template[0] !== '/'
-        ) {
-            $template = $this->options['dir'] . '/' . $template;
-        }
+        $template = $this->options['dir'] . '/' . $template;
 
         if (!isset($this->processors[$template])) {
             $doc = new \DOMDocument();
@@ -53,18 +53,13 @@ class Xslt extends Processor
                 throw new LogicException('XSL import error');
             }
 
-            if ($this->options['properties']
-                && !$processor->setParameter('', $this->options['properties'])
-            ) {
-                throw new LogicException('Unable set parameters to XSL');
-            }
-
             $this->processors[$template] = $processor;
         }
 
-        $sxe = Xslt\ArrayToSXE::transform(
-            (array) $context, $this->options['root'], $this->options['item']
-        );
+        $sxe = Xslt\ArrayToSXE::transform([
+            ...$this->options['globals'],
+            ...(array) $context
+        ], $this->options['root'], $this->options['item']);
 
         $contents = $this->processors[$template]->transformToXML($sxe) ?? '';
 

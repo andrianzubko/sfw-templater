@@ -18,12 +18,24 @@ abstract class Processor
     protected static int $counter = 0;
 
     /**
+     * Passes parameters to properties and checking some.
+     *
+     * @throws InvalidArgumentException
+     */
+    public function __construct(protected array $options)
+    {
+        if (!isset($this->options['dir'])) {
+            throw new InvalidArgumentException("Option 'dir' is required");
+        }
+    }
+
+    /**
      * Transforming template to page.
      *
      * @throws InvalidArgumentException
      * @throws LogicException
      */
-    abstract public function transform(array|object|null $context, string $template): string;
+    abstract public function transform(string $template, array|object|null $context = null): string;
 
     /**
      * Getting timer of processed templates.

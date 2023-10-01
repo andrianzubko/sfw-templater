@@ -8,10 +8,14 @@ namespace SFW\Templater;
 class Native extends Processor
 {
     /**
-     * Passes parameters to properties and initializes default properties.
+     * Passes parameters to properties and checking some.
+     *
+     * @throws InvalidArgumentException
      */
-    public function __construct(protected array $options = [])
+    public function __construct(array $options = [])
     {
+        parent::__construct($options);
+
         $this->options['minify'] ??= true;
 
         $this->options['debug'] ??= false;
@@ -52,15 +56,11 @@ class Native extends Processor
      *
      * @throws LogicException
      */
-    public function transform(array|object|null $context, string $template): string
+    public function transform(string $template, array|object|null $context = null): string
     {
         $timer = gettimeofday(true);
 
-        if (isset($this->options['dir'])
-            && $template[0] !== '/'
-        ) {
-            $template = $this->options['dir'] . '/' . $template;
-        }
+        $template = $this->options['dir'] . '/' . $template;
 
         try {
             ob_start(fn() => null);
@@ -81,7 +81,7 @@ class Native extends Processor
         } catch (\Throwable $e) {
             ob_end_clean();
 
-            if ($e instanceof \Exception) {
+            if ($e instanceof Exception) {
                 throw $e;
             } else {
                 throw (new LogicException($e->getMessage()))
