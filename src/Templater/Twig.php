@@ -29,13 +29,19 @@ class Twig extends Processor
                 ->setLine($e->getLine());
         }
 
-        $this->twig = new \Twig\Environment($loader, [
-            'debug' => $this->options['debug'] ?? false,
-            'cache' => $this->options['cache'] ?? false,
-            'auto_reload' => $this->options['reload'] ?? true,
-            'strict_variables' => $this->options['strict'] ?? true,
-            'autoescape' => $this->options['autoescape'] ?? 'html',
-        ]);
+        $this->twig = new \Twig\Environment($loader,
+            [
+                'debug' => $this->options['debug'] ?? false,
+
+                'cache' => $this->options['cache'] ?? false,
+
+                'auto_reload' => $this->options['reload'] ?? true,
+
+                'strict_variables' => $this->options['strict'] ?? true,
+
+                'autoescape' => $this->options['autoescape'] ?? 'html',
+            ]
+        );
 
         if (isset($this->options['globals'])) {
             foreach ($this->options['globals'] as $name => $value) {
