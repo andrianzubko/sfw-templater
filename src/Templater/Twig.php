@@ -21,7 +21,13 @@ class Twig extends Processor
     {
         parent::__construct($options);
 
-        $loader = new \Twig\Loader\FilesystemLoader($this->options['dir']);
+        try {
+            $loader = new \Twig\Loader\FilesystemLoader($this->options['dir']);
+        } catch (\Twig\Error\LoaderError $e) {
+            throw (new LogicException($e->getMessage()))
+                ->setFile($e->getFile())
+                ->setLine($e->getLine());
+        }
 
         $this->twig = new \Twig\Environment($loader, [
             'debug' => $this->options['debug'] ?? false,
