@@ -1,8 +1,6 @@
 <?php /** @noinspection PhpComposerExtensionStubsInspection */
 
-namespace SFW\Templater\Xslt;
-
-use SFW\Templater\InvalidArgumentException;
+namespace SFW\Templater\Util;
 
 /**
  * Transformer.
@@ -12,7 +10,7 @@ class ArrayToSXE
     /**
      * Transforming array to SimpleXMLElement.
      *
-     * @throws InvalidArgumentException
+     * @throws \SFW\Templater\InvalidArgumentException
      */
     public static function transform(
         array $array,
@@ -28,7 +26,7 @@ class ArrayToSXE
                     new \DOMElement($root)
                 );
             } catch (\DOMException $e) {
-                throw new InvalidArgumentException($e->getMessage());
+                throw new \SFW\Templater\InvalidArgumentException($e->getMessage());
             }
 
             $sxe = simplexml_import_dom($dom);

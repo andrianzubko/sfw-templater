@@ -38,6 +38,10 @@ class Xslt extends Processor
     {
         $timer = gettimeofday(true);
 
+        if (!str_ends_with($template, '.xsl')) {
+            $template .= '.xsl';
+        }
+
         $template = $this->options['dir'] . '/' . $template;
 
         if (!isset($this->processors[$template])) {
@@ -58,7 +62,7 @@ class Xslt extends Processor
 
         $context = [...$this->options['globals'], ...(array) $context];
 
-        $sxe = Xslt\ArrayToSXE::transform($context, $this->options['root'], $this->options['item']);
+        $sxe = Util\ArrayToSXE::transform($context, $this->options['root'], $this->options['item']);
 
         $contents = $this->processors[$template]->transformToXML($sxe) ?? '';
 

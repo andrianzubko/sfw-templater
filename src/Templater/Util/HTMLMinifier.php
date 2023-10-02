@@ -1,11 +1,11 @@
 <?php
 
-namespace SFW\Templater;
+namespace SFW\Templater\Util;
 
 /**
  * HTML minifier.
  */
-class Minifier
+class HTMLMinifier
 {
     /**
      * Minifying all.
@@ -21,20 +21,18 @@ class Minifier
         $pos = 0;
 
         foreach ($matches as $M) {
-            $chunks[] = self::between(
+            $chunks[] = static::between(
                 substr($contents, $pos, (int) $M[0][1] - $pos)
             );
 
             $tag = strtolower($M[1][0]);
 
-            $chunks[] = self::$tag($M[0][0]);
+            $chunks[] = static::$tag($M[0][0]);
 
             $pos = (int) $M[0][1] + strlen($M[0][0]);
         }
 
-        $chunks[] = self::between(substr($contents, $pos));
-
-        $chunks[] = "\n";
+        $chunks[] = static::between(substr($contents, $pos));
 
         return implode($chunks);
     }

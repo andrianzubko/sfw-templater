@@ -33,11 +33,11 @@ class Twig extends Processor
 
                 'cache' => $this->options['cache'] ?? false,
 
-                'auto_reload' => $this->options['reload'] ?? true,
+                'auto_reload' => $this->options['reload'] ?? false,
 
-                'strict_variables' => $this->options['strict'] ?? true,
+                'strict_variables' => $this->options['strict'] ?? false,
 
-                'autoescape' => $this->options['autoescape'] ?? 'html',
+                'autoescape' => 'name',
             ]);
         } catch (\LogicException $e) {
             throw (new LogicException($e->getMessage()))
@@ -73,6 +73,10 @@ class Twig extends Processor
     {
         $timer = gettimeofday(true);
 
+        if (!str_ends_with($template, '.twig')) {
+            $template .= '.twig';
+        }
+
         try {
             $contents = $this->twig->render($template, (array) $context);
         } catch (\LogicException $e) {
@@ -85,12 +89,12 @@ class Twig extends Processor
                 ->setLine($e->getLine());
         }
 
-        if ($this->options['minify']) {
-            if ($this->options['debug']) {
-                $contents = Debugger::transform($contents);
-            } else {
-                $contents = Minifier::transform($contents);
-            }
+        if ($this->options['minify']
+            && str_ends_with($template, '.html.twig')
+        ) {
+            $contents = $this->options['debug']
+                ? Util\HTMLDebugger::transform($contents)
+                : Util\HTMLMinifier::transform($contents);
         }
 
         self::$timer += gettimeofday(true) - $timer;

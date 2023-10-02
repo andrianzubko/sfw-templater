@@ -1,11 +1,11 @@
 <?php
 
-namespace SFW\Templater;
+namespace SFW\Templater\Util;
 
 /**
  * HTML debugger.
  */
-class Debugger extends Minifier
+class HTMLDebugger extends HTMLMinifier
 {
     /**
      * Leave javascript as is.

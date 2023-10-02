@@ -60,12 +60,16 @@ class Native extends Processor
     {
         $timer = gettimeofday(true);
 
+        if (!str_ends_with($template, '.php')) {
+            $template .= '.php';
+        }
+
         $template = $this->options['dir'] . '/' . $template;
 
         try {
             ob_start(fn() => null);
 
-            $isolator = new Native\Isolator(
+            $isolator = new NativeIsolator(
                 $this->options['properties'], (array) $context, $template
             );
 
@@ -86,12 +90,12 @@ class Native extends Processor
                 ->setLine($e->getLine());
         }
 
-        if ($this->options['minify']) {
-            if ($this->options['debug']) {
-                $contents = Debugger::transform($contents);
-            } else {
-                $contents = Minifier::transform($contents);
-            }
+        if ($this->options['minify']
+            && str_ends_with($template, '.html.php')
+        ) {
+            $contents = $this->options['debug']
+                ? Util\HTMLDebugger::transform($contents)
+                : Util\HTMLMinifier::transform($contents);
         }
 
         self::$timer += gettimeofday(true) - $timer;

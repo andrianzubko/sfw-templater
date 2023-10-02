@@ -1,14 +1,12 @@
 <?php
 
-namespace SFW\Templater\Native;
-
-use SFW\Templater\LogicException;
+namespace SFW\Templater;
 
 /**
  * Templates isolator.
  */
 #[\AllowDynamicProperties]
-class Isolator extends \stdClass
+class NativeIsolator extends \stdClass
 {
     /**
      * Templates will be part of this class.
