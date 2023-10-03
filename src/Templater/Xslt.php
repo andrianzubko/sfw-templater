@@ -34,20 +34,16 @@ class Xslt extends Processor
      * @throws InvalidArgumentException
      * @throws LogicException
      */
-    public function transform(string $template, array|object|null $context = null): string
+    public function transform(string $filename, array|object|null $context = null): string
     {
         $timer = gettimeofday(true);
 
-        if (!str_ends_with($template, '.xsl')) {
-            $template .= '.xsl';
-        }
+        $filename = $this->options['dir'] . '/' . $this->normalizeFilename($filename, 'xsl');
 
-        $template = $this->options['dir'] . '/' . $template;
-
-        if (!isset($this->processors[$template])) {
+        if (!isset($this->processors[$filename])) {
             $doc = new \DOMDocument();
 
-            if (!$doc->load($template, LIBXML_NOCDATA)) {
+            if (!$doc->load($filename, LIBXML_NOCDATA)) {
                 throw new LogicException('XSL loading error');
             }
 
@@ -57,14 +53,14 @@ class Xslt extends Processor
                 throw new LogicException('XSL import error');
             }
 
-            $this->processors[$template] = $processor;
+            $this->processors[$filename] = $processor;
         }
 
         $context = [...$this->options['globals'], ...(array) $context];
 
         $sxe = Util\ArrayToSXE::transform($context, $this->options['root'], $this->options['item']);
 
-        $contents = $this->processors[$template]->transformToXML($sxe) ?? '';
+        $contents = $this->processors[$filename]->transformToXML($sxe) ?? '';
 
         if ($contents === false) {
             throw new LogicException('XSL transform error');

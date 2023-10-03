@@ -11,7 +11,7 @@ class NativeIsolator extends \stdClass
     /**
      * Templates will be part of this class.
      */
-    public function __construct(array $properties, array $context, string $template)
+    public function __construct(string $filename, array $context, array $properties)
     {
         foreach ($properties as $name => $value) {
             $this->$name = $value;
@@ -19,7 +19,7 @@ class NativeIsolator extends \stdClass
 
         $this->context = $context;
 
-        require $template;
+        require $filename;
     }
 
     /**

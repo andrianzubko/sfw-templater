@@ -18,6 +18,25 @@ abstract class Processor
     protected static int $counter = 0;
 
     /**
+     * Mime type of last template.
+     */
+    protected string $mime = 'text/html';
+
+    /**
+     * Possible mime types.
+     */
+    protected array $mimes = [
+        '' => 'text/html',
+        'html' => 'text/html',
+        'txt' => 'text/plain',
+        'css' => 'text/css',
+        'js' => 'application/javascript',
+        'json' => 'application/json',
+        'xml' => 'application/xml',
+        'rtf' => 'application/rtf',
+    ];
+
+    /**
      * Passes parameters to properties and checking some.
      *
      * @throws InvalidArgumentException
@@ -35,7 +54,33 @@ abstract class Processor
      * @throws InvalidArgumentException
      * @throws LogicException
      */
-    abstract public function transform(string $template, array|object|null $context = null): string;
+    abstract public function transform(string $filename, array|object|null $context = null): string;
+
+    /**
+     * Normalizes template filename.
+     */
+    protected function normalizeFilename($filename, $extension): string
+    {
+        if (!str_ends_with($filename, ".$extension")) {
+            $filename .= ".$extension";
+        }
+
+        if (preg_match('/\.([^.]+)\.[^.]+$/', $filename, $M)) {
+            $this->mime = $this->mimes[$M[1]] ?? $this->mimes[''];
+        } else {
+            $this->mime = $this->mimes[''];
+        }
+
+        return $filename;
+    }
+
+    /**
+     * Gets last template mime type.
+     */
+    public function getLastMime(): string
+    {
+        return $this->mime;
+    }
 
     /**
      * Getting timer of processed templates.

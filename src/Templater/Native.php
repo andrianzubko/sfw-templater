@@ -56,22 +56,16 @@ class Native extends Processor
      *
      * @throws LogicException
      */
-    public function transform(string $template, array|object|null $context = null): string
+    public function transform(string $filename, array|object|null $context = null): string
     {
         $timer = gettimeofday(true);
 
-        if (!str_ends_with($template, '.php')) {
-            $template .= '.php';
-        }
-
-        $template = $this->options['dir'] . '/' . $template;
+        $filename = $this->options['dir'] . '/' . $this->normalizeFilename($filename, 'php');
 
         try {
             ob_start(fn() => null);
 
-            $isolator = new NativeIsolator(
-                $this->options['properties'], (array) $context, $template
-            );
+            $isolator = new NativeIsolator($filename, (array) $context, $this->options['properties']);
 
             ob_clean();
 
@@ -91,7 +85,7 @@ class Native extends Processor
         }
 
         if ($this->options['minify']
-            && str_ends_with($template, '.html.php')
+            && $this->mime === 'text/html'
         ) {
             $contents = $this->options['debug']
                 ? Util\HTMLDebugger::transform($contents)

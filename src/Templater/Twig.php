@@ -69,16 +69,14 @@ class Twig extends Processor
      *
      * @throws LogicException
      */
-    public function transform(string $template, array|object|null $context = null): string
+    public function transform(string $filename, array|object|null $context = null): string
     {
         $timer = gettimeofday(true);
 
-        if (!str_ends_with($template, '.twig')) {
-            $template .= '.twig';
-        }
+        $filename = $this->normalizeFilename($filename, 'twig');
 
         try {
-            $contents = $this->twig->render($template, (array) $context);
+            $contents = $this->twig->render($filename, (array) $context);
         } catch (\LogicException $e) {
             throw (new LogicException($e->getMessage()))
                 ->setFile($e->getFile())
@@ -90,7 +88,7 @@ class Twig extends Processor
         }
 
         if ($this->options['minify']
-            && str_ends_with($template, '.html.twig')
+            && $this->mime === 'text/html'
         ) {
             $contents = $this->options['debug']
                 ? Util\HTMLDebugger::transform($contents)
