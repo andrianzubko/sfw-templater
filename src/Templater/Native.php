@@ -54,20 +54,22 @@ class Native extends Processor
     /**
      * Transforms template to page.
      *
+     * If context is an object, then only public non-static properties will be taken.
+     *
      * @throws LogicException
      */
-    public function transform(string $filename, array|null $context = null): string
+    public function transform(string $filename, array|object|null $context = null): string
     {
         $timer = gettimeofday(true);
 
-        $filename = $this->options['dir'] . '/' . $this->normalizeFilename($filename, 'php');
+        $filename = $this->normalizeFilename($filename, 'php', $this->options['dir']);
+
+        $context = $this->normalizeContext($context);
 
         try {
             ob_start(fn() => null);
 
-            $isolator = new NativeIsolator(
-                $filename, (array) $context, $this->options['properties']
-            );
+            $isolator = new NativeIsolator($filename, $context, $this->options['properties']);
 
             ob_clean();
 

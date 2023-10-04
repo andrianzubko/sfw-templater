@@ -31,14 +31,18 @@ class Xslt extends Processor
     /**
      * Transforming template to page.
      *
+     * If context is an object, then only public non-static properties will be taken.
+     *
      * @throws InvalidArgumentException
      * @throws LogicException
      */
-    public function transform(string $filename, array|null $context = null): string
+    public function transform(string $filename, array|object|null $context = null): string
     {
         $timer = gettimeofday(true);
 
-        $filename = $this->options['dir'] . '/' . $this->normalizeFilename($filename, 'xsl');
+        $filename = $this->normalizeFilename($filename, 'xsl', $this->options['dir']);
+
+        $context = $this->normalizeContext($context);
 
         if (!isset($this->processors[$filename])) {
             $doc = new \DOMDocument();
@@ -56,7 +60,7 @@ class Xslt extends Processor
             $this->processors[$filename] = $processor;
         }
 
-        $context = [...$this->options['globals'], ...(array) $context];
+        $context = [...$this->options['globals'], ...$context];
 
         $sxe = Util\ArrayToSXE::transform($context, $this->options['root'], $this->options['item']);
 

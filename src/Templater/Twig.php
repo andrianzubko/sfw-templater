@@ -67,16 +67,20 @@ class Twig extends Processor
     /**
      * Transforms template to page.
      *
+     * If context is an object, then only public non-static properties will be taken.
+     *
      * @throws LogicException
      */
-    public function transform(string $filename, array|null $context = null): string
+    public function transform(string $filename, array|object|null $context = null): string
     {
         $timer = gettimeofday(true);
 
         $filename = $this->normalizeFilename($filename, 'twig');
 
+        $context = $this->normalizeContext($context);
+
         try {
-            $contents = $this->twig->render($filename, (array) $context);
+            $contents = $this->twig->render($filename, $context);
         } catch (\LogicException $e) {
             throw (new LogicException($e->getMessage()))
                 ->setFile($e->getFile())

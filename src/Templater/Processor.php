@@ -51,15 +51,25 @@ abstract class Processor
     /**
      * Transforming template to page.
      *
+     * If context is an object, then only public non-static properties will be taken.
+     *
      * @throws InvalidArgumentException
      * @throws LogicException
      */
-    abstract public function transform(string $filename, array|null $context = null): string;
+    abstract public function transform(string $filename, array|object|null $context = null): string;
+
+    /**
+     * Normalizes context.
+     */
+    protected function normalizeContext(array|object|null $context): array
+    {
+        return is_object($context) ? get_object_vars($context) : (array) $context;
+    }
 
     /**
      * Normalizes template filename.
      */
-    protected function normalizeFilename($filename, $extension): string
+    protected function normalizeFilename($filename, $extension, ?string $dir = null): string
     {
         if (!str_ends_with($filename, ".$extension")) {
             $filename .= ".$extension";
@@ -71,7 +81,7 @@ abstract class Processor
             $this->mime = $this->mimes[''];
         }
 
-        return $filename;
+        return isset($dir) ? "$dir/$filename" : $filename;
     }
 
     /**
