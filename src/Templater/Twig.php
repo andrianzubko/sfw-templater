@@ -69,7 +69,7 @@ class Twig extends Processor
      *
      * @throws LogicException
      */
-    public function transform(string $filename, array|object|null $context = null): string
+    public function transform(string $filename, array|null $context = null): string
     {
         $timer = gettimeofday(true);
 

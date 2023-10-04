@@ -56,7 +56,7 @@ class Native extends Processor
      *
      * @throws LogicException
      */
-    public function transform(string $filename, array|object|null $context = null): string
+    public function transform(string $filename, array|null $context = null): string
     {
         $timer = gettimeofday(true);
 
@@ -65,7 +65,9 @@ class Native extends Processor
         try {
             ob_start(fn() => null);
 
-            $isolator = new NativeIsolator($filename, (array) $context, $this->options['properties']);
+            $isolator = new NativeIsolator(
+                $filename, (array) $context, $this->options['properties']
+            );
 
             ob_clean();
 

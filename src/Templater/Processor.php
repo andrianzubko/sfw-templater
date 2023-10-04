@@ -54,7 +54,7 @@ abstract class Processor
      * @throws InvalidArgumentException
      * @throws LogicException
      */
-    abstract public function transform(string $filename, array|object|null $context = null): string;
+    abstract public function transform(string $filename, array|null $context = null): string;
 
     /**
      * Normalizes template filename.
