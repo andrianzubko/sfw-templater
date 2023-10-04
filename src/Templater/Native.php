@@ -27,7 +27,7 @@ class Native extends Processor
                 return '';
             }
 
-            return htmlspecialchars($string, ENT_COMPAT, 'UTF-8');
+            return htmlspecialchars($string, ENT_QUOTES | ENT_HTML5, 'UTF-8');
         };
 
         $this->options['properties']['u'] ??= function (?string $string): string {
@@ -43,10 +43,10 @@ class Native extends Processor
                 return '';
             }
 
-            return str_replace(
-                ['\\','/',"\n","\r",' ','"',"'",'<','>','&',"\xe2\x80\xa8","\xe2\x80\xa9"],
-                ['\\\\','\\/','\\n','\\r','\\x20','\\x22','\\x27','\\x3C','\\x3E','\\x26','\\u2028','\\u2029'],
-                    $string
+            return str_replace(' ', '\\x20',
+                json_encode($string,
+                    JSON_UNESCAPED_UNICODE | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_TAG
+                )
             );
         };
     }
