@@ -34,6 +34,8 @@ class HTMLMinifier
 
         $chunks[] = static::between(substr($contents, $pos));
 
+        $chunks[] = "\n";
+
         return implode($chunks);
     }
 
