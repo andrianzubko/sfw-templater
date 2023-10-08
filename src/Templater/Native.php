@@ -91,9 +91,11 @@ class Native extends Processor
         if ($this->options['minify']
             && $this->mime === 'text/html'
         ) {
-            $contents = $this->options['debug']
-                ? Util\HTMLDebugger::transform($contents)
-                : Util\HTMLMinifier::transform($contents);
+            if ($this->options['debug']) {
+                $contents = Util\HTMLDebugger::transform($contents);
+            } else {
+                $contents = Util\HTMLMinifier::transform($contents);
+            }
         }
 
         self::$timer += gettimeofday(true) - $timer;

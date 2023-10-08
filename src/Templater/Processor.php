@@ -87,7 +87,7 @@ abstract class Processor
     /**
      * Gets last template mime type.
      */
-    public function getLastMime(): string
+    public function getMime(): string
     {
         return $this->mime;
     }
