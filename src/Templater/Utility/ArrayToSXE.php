@@ -1,6 +1,8 @@
 <?php /** @noinspection PhpComposerExtensionStubsInspection */
 
-namespace SFW\Templater\Util;
+namespace SFW\Templater\Utility;
+
+use \SFW\Templater\Exception;
 
 /**
  * Transformer.
@@ -10,7 +12,7 @@ class ArrayToSXE
     /**
      * Transforming array to SimpleXMLElement.
      *
-     * @throws \SFW\Templater\InvalidArgumentException
+     * @throws Exception\InvalidArgument
      */
     public static function transform(
         array $array,
@@ -22,11 +24,9 @@ class ArrayToSXE
             $dom = new \DOMDocument('1.0', 'utf-8');
 
             try {
-                $dom->appendChild(
-                    new \DOMElement($root)
-                );
+                $dom->appendChild(new \DOMElement($root));
             } catch (\DOMException $e) {
-                throw new \SFW\Templater\InvalidArgumentException($e->getMessage());
+                throw new Exception\InvalidArgument($e->getMessage());
             }
 
             $sxe = simplexml_import_dom($dom);
@@ -52,9 +52,7 @@ class ArrayToSXE
             } else {
                 if ($key[0] === '@') {
                     $sxe[substr($key, 1)] = $element;
-                } elseif (
-                    is_array($element)
-                ) {
+                } elseif (is_array($element)) {
                     self::transform($element, $root, $item, $sxe->addChild($key));
                 } elseif (
                     $element instanceof \SimpleXMLElement

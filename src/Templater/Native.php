@@ -10,7 +10,7 @@ class Native extends Processor
     /**
      * Passes parameters to properties and checking some.
      *
-     * @throws InvalidArgumentException
+     * @throws Exception\InvalidArgument
      */
     public function __construct(array $options = [])
     {
@@ -56,7 +56,7 @@ class Native extends Processor
      *
      * If context is an object, then only public non-static properties will be taken.
      *
-     * @throws LogicException
+     * @throws Exception\Logic
      */
     public function transform(string $filename, array|object|null $context = null): string
     {
@@ -83,7 +83,7 @@ class Native extends Processor
         } catch (\Throwable $e) {
             ob_end_clean();
 
-            throw (new LogicException($e->getMessage()))
+            throw (new Exception\Logic($e->getMessage()))
                 ->setFile($e->getFile())
                 ->setLine($e->getLine());
         }
@@ -92,9 +92,9 @@ class Native extends Processor
             && $this->mime === 'text/html'
         ) {
             if ($this->options['debug']) {
-                $contents = Util\HTMLDebugger::transform($contents);
+                $contents = Utility\HTMLDebugger::transform($contents);
             } else {
-                $contents = Util\HTMLMinifier::transform($contents);
+                $contents = Utility\HTMLMinifier::transform($contents);
             }
         }
 

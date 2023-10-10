@@ -15,7 +15,9 @@ class Twig extends Processor
     /**
      * Passes parameters to properties and checking some.
      *
-     * @throws InvalidArgumentException
+     * @throws Exception\InvalidArgument
+     * @throws Exception\Logic
+     * @throws Exception\Runtime
      */
     public function __construct(array $options = [])
     {
@@ -40,11 +42,11 @@ class Twig extends Processor
                 'autoescape' => 'name',
             ]);
         } catch (\LogicException $e) {
-            throw (new LogicException($e->getMessage()))
+            throw (new Exception\Logic($e->getMessage()))
                 ->setFile($e->getFile())
                 ->setLine($e->getLine());
         } catch (\Throwable $e) {
-            throw (new RuntimeException($e->getMessage()))
+            throw (new Exception\Runtime($e->getMessage()))
                 ->setFile($e->getFile())
                 ->setLine($e->getLine());
         }
@@ -69,7 +71,8 @@ class Twig extends Processor
      *
      * If context is an object, then only public non-static properties will be taken.
      *
-     * @throws LogicException
+     * @throws Exception\Logic
+     * @throws Exception\Runtime
      */
     public function transform(string $filename, array|object|null $context = null): string
     {
@@ -82,11 +85,11 @@ class Twig extends Processor
         try {
             $contents = $this->twig->render($filename, $context);
         } catch (\LogicException $e) {
-            throw (new LogicException($e->getMessage()))
+            throw (new Exception\Logic($e->getMessage()))
                 ->setFile($e->getFile())
                 ->setLine($e->getLine());
         } catch (\Throwable $e) {
-            throw (new RuntimeException($e->getMessage()))
+            throw (new Exception\Runtime($e->getMessage()))
                 ->setFile($e->getFile())
                 ->setLine($e->getLine());
         }
@@ -95,9 +98,9 @@ class Twig extends Processor
             && $this->mime === 'text/html'
         ) {
             if ($this->options['debug']) {
-                $contents = Util\HTMLDebugger::transform($contents);
+                $contents = Utility\HTMLDebugger::transform($contents);
             } else {
-                $contents = Util\HTMLMinifier::transform($contents);
+                $contents = Utility\HTMLMinifier::transform($contents);
             }
         }
 

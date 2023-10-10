@@ -25,7 +25,7 @@ class NativeIsolator extends \stdClass
     /**
      * With this magic method you can call anonymous functions in properties as methods.
      *
-     * @throws LogicException
+     * @throws Exception\Logic
      */
     public function __call(string $name, array $arguments): mixed
     {
@@ -33,11 +33,11 @@ class NativeIsolator extends \stdClass
             return ($this->$name)(...$arguments);
         } catch (\Throwable $e) {
             if ($e->getFile() === __FILE__) {
-                throw (new LogicException($e->getMessage()))
+                throw (new Exception\Logic($e->getMessage()))
                     ->setFile($e->getTrace()[0]['file'])
                     ->setLine($e->getTrace()[0]['line']);
             } else {
-                throw (new LogicException($e->getMessage()))
+                throw (new Exception\Logic($e->getMessage()))
                     ->setFile($e->getFile())
                     ->setLine($e->getLine());
             }

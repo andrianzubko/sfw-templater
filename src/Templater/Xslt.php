@@ -15,7 +15,7 @@ class Xslt extends Processor
     /**
      * Passes parameters to properties and checking some.
      *
-     * @throws InvalidArgumentException
+     * @throws Exception\InvalidArgument
      */
     public function __construct(array $options = [])
     {
@@ -33,8 +33,8 @@ class Xslt extends Processor
      *
      * If context is an object, then only public non-static properties will be taken.
      *
-     * @throws InvalidArgumentException
-     * @throws LogicException
+     * @throws Exception\InvalidArgument
+     * @throws Exception\Logic
      */
     public function transform(string $filename, array|object|null $context = null): string
     {
@@ -48,13 +48,13 @@ class Xslt extends Processor
             $doc = new \DOMDocument();
 
             if (!$doc->load($filename, LIBXML_NOCDATA)) {
-                throw new LogicException('XSL loading error');
+                throw new Exception\Logic('XSL loading error');
             }
 
             $processor = new \XSLTProcessor();
 
             if (!$processor->importStylesheet($doc)) {
-                throw new LogicException('XSL import error');
+                throw new Exception\Logic('XSL import error');
             }
 
             $this->processors[$filename] = $processor;
@@ -62,12 +62,12 @@ class Xslt extends Processor
 
         $context = [...$this->options['globals'], ...$context];
 
-        $sxe = Util\ArrayToSXE::transform($context, $this->options['root'], $this->options['item']);
+        $sxe = Utility\ArrayToSXE::transform($context, $this->options['root'], $this->options['item']);
 
         $contents = $this->processors[$filename]->transformToXML($sxe) ?? '';
 
         if ($contents === false) {
-            throw new LogicException('XSL transform error');
+            throw new Exception\Logic('XSL transform error');
         }
 
         self::$timer += gettimeofday(true) - $timer;

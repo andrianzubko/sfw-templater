@@ -39,12 +39,14 @@ abstract class Processor
     /**
      * Passes parameters to properties and checking some.
      *
-     * @throws InvalidArgumentException
+     * @throws Exception\InvalidArgument
+     * @throws Exception\Logic
+     * @throws Exception\Runtime
      */
     public function __construct(protected array $options)
     {
         if (!isset($this->options['dir'])) {
-            throw new InvalidArgumentException("Option 'dir' is required");
+            throw new Exception\InvalidArgument("Option 'dir' is required");
         }
     }
 
@@ -53,8 +55,9 @@ abstract class Processor
      *
      * If context is an object, then only public non-static properties will be taken.
      *
-     * @throws InvalidArgumentException
-     * @throws LogicException
+     * @throws Exception\InvalidArgument
+     * @throws Exception\Logic
+     * @throws Exception\Runtime
      */
     abstract public function transform(string $filename, array|object|null $context = null): string;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace SFW\Templater\Util;
+namespace SFW\Templater\Utility;
 
 /**
  * HTML debugger.

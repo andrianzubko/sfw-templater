@@ -1,6 +1,6 @@
 <?php
 
-namespace SFW\Templater\Util;
+namespace SFW\Templater\Utility;
 
 /**
  * HTML minifier.
@@ -21,9 +21,7 @@ class HTMLMinifier
         $pos = 0;
 
         foreach ($matches as $M) {
-            $chunks[] = static::between(
-                substr($contents, $pos, (int) $M[0][1] - $pos)
-            );
+            $chunks[] = static::between(substr($contents, $pos, (int) $M[0][1] - $pos));
 
             $tag = strtolower($M[1][0]);
 
@@ -68,9 +66,7 @@ class HTMLMinifier
      */
     protected static function between(string $chunk): string
     {
-        $chunk = trim(
-            preg_replace('/<!--.*?-->/s', '', $chunk)
-        );
+        $chunk = trim(preg_replace('/<!--.*?-->/s', '', $chunk));
 
         if ($chunk === '') {
             return '';
