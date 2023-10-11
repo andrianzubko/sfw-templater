@@ -23,15 +23,11 @@ class Twig extends Processor
     {
         parent::__construct($options);
 
-        $this->options['minify'] ??= true;
-
-        $this->options['debug'] ??= false;
-
         try {
             $loader = new \Twig\Loader\FilesystemLoader($this->options['dir']);
 
             $this->twig = new \Twig\Environment($loader, [
-                'debug' => $this->options['debug'],
+                'debug' => $this->options['debug'] ?? false,
 
                 'cache' => $this->options['cache'] ?? false,
 
@@ -92,16 +88,6 @@ class Twig extends Processor
             throw (new Exception\Runtime($e->getMessage()))
                 ->setFile($e->getFile())
                 ->setLine($e->getLine());
-        }
-
-        if ($this->options['minify']
-            && $this->mime === 'text/html'
-        ) {
-            if ($this->options['debug']) {
-                $contents = Utility\HTMLDebugger::transform($contents);
-            } else {
-                $contents = Utility\HTMLMinifier::transform($contents);
-            }
         }
 
         self::$timer += gettimeofday(true) - $timer;
