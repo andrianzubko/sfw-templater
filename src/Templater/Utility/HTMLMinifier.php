@@ -8,7 +8,7 @@ namespace SFW\Templater\Utility;
 class HTMLMinifier
 {
     /**
-     * Minifying all.
+     * Minifies all.
      */
     public static function transform(string $contents): string
     {
@@ -38,7 +38,7 @@ class HTMLMinifier
     }
 
     /**
-     * Special tag <t> preserve all spaces inside, but removed itself.
+     * Special tag <t> preserves all spaces inside, but removes itself.
      */
     protected static function t(string $chunk): string
     {
@@ -46,7 +46,7 @@ class HTMLMinifier
     }
 
     /**
-     * Minifying javascript.
+     * Minifies javascript.
      */
     protected static function script(string $chunk): string
     {
@@ -54,7 +54,7 @@ class HTMLMinifier
     }
 
     /**
-     * Minifying styles.
+     * Minifies styles.
      */
     protected static function style(string $chunk): string
     {
@@ -62,7 +62,7 @@ class HTMLMinifier
     }
 
     /**
-     * Minifying all between matches.
+     * Minifies all between matches.
      */
     protected static function between(string $chunk): string
     {

@@ -8,7 +8,7 @@ namespace SFW\Templater\Utility;
 class HTMLDebugger extends HTMLMinifier
 {
     /**
-     * Leave javascript as is.
+     * Leaves javascript as is.
      */
     protected static function script(string $chunk): string
     {
@@ -16,7 +16,7 @@ class HTMLDebugger extends HTMLMinifier
     }
 
     /**
-     * Leave styles as is.
+     * Leaves styles as is.
      */
     protected static function style(string $chunk): string
     {
@@ -24,7 +24,7 @@ class HTMLDebugger extends HTMLMinifier
     }
 
     /**
-     * Leave comments and comment spaces that Minifier cuts out.
+     * Leaves comments and comment spaces that Minifier cuts out.
      */
     protected static function between(string $chunk): string
     {

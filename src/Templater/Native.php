@@ -23,7 +23,7 @@ class Native extends Processor
         $this->options['properties'] ??= [];
 
         $this->options['properties']['h'] ??= function (?string $string): string {
-            if (!isset($string)) {
+            if ($string === null) {
                 return '';
             }
 
@@ -31,7 +31,7 @@ class Native extends Processor
         };
 
         $this->options['properties']['u'] ??= function (?string $string): string {
-            if (!isset($string)) {
+            if ($string === null) {
                 return '';
             }
 
@@ -39,7 +39,7 @@ class Native extends Processor
         };
 
         $this->options['properties']['j'] ??= function (?string $string): string {
-            if (!isset($string)) {
+            if ($string === null) {
                 return '""';
             }
 

@@ -10,7 +10,7 @@ use \SFW\Templater\Exception;
 class ArrayToSXE
 {
     /**
-     * Transforming array to SimpleXMLElement.
+     * Transforms array to SimpleXMLElement.
      *
      * @throws Exception\InvalidArgument
      */
@@ -20,7 +20,7 @@ class ArrayToSXE
         string $item = 'item',
         ?\SimpleXMLElement $sxe = null
     ): \SimpleXMLElement {
-        if (!isset($sxe)) {
+        if ($sxe === null) {
             $dom = new \DOMDocument('1.0', 'utf-8');
 
             try {

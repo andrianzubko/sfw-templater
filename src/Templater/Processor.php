@@ -84,7 +84,7 @@ abstract class Processor
             $this->mime = $this->mimes[''];
         }
 
-        return isset($dir) ? "$dir/$filename" : $filename;
+        return $dir !== null ? "$dir/$filename" : $filename;
     }
 
     /**
