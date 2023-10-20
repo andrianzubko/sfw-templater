@@ -10,7 +10,7 @@ abstract class Processor
     /**
      * Timer of processed templates.
      */
-    protected static float $timer = 0;
+    protected static float $timer = 0.0;
 
     /**
      * Counter of processed templates.
