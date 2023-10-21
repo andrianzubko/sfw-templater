@@ -50,7 +50,7 @@ class HTMLMinifier
      */
     protected static function script(string $chunk): string
     {
-        return preg_replace("/(?: |\t|\n|\r|\0|\x0B|\x0C|\u{A0}|\u{FEFF})+/S", ' ', $chunk);
+        return preg_replace("/[ \t\n\r\v\f\0]+/", ' ', $chunk);
     }
 
     /**
@@ -58,7 +58,7 @@ class HTMLMinifier
      */
     protected static function style(string $chunk): string
     {
-        return preg_replace("/(?: |\t|\n|\r|\0|\x0B|\x0C|\u{A0}|\u{FEFF})+/S", ' ', $chunk);
+        return preg_replace("/[ \t\n\r\v\f\0]+/", ' ', $chunk);
     }
 
     /**
@@ -72,7 +72,7 @@ class HTMLMinifier
             return '';
         }
 
-        $chunk = preg_replace("/(?: |\t|\n|\r|\0|\x0B|\x0C|\u{A0}|\u{FEFF})+/S", ' ', $chunk);
+        $chunk = preg_replace("/[ \t\n\r\v\f\0]+/", ' ', $chunk);
 
         return str_replace('> <', '><', $chunk);
     }
