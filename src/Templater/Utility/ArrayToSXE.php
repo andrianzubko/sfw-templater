@@ -14,58 +14,58 @@ class ArrayToSXE
      *
      * @throws Exception\InvalidArgument
      */
-    public static function transform(
-        array $array,
-        string $root = 'root',
-        string $item = 'item',
-        ?\SimpleXMLElement $sxe = null
-    ): \SimpleXMLElement {
-        if ($sxe === null) {
-            $dom = new \DOMDocument('1.0', 'utf-8');
+    public static function transform(array $array, string $root = 'root', string $item = 'item'): \SimpleXMLElement
+    {
+        $dom = new \DOMDocument('1.0', 'utf-8');
 
-            try {
-                $dom->appendChild(new \DOMElement($root));
-            } catch (\DOMException $e) {
-                throw new Exception\InvalidArgument($e->getMessage());
-            }
-
-            $sxe = simplexml_import_dom($dom);
+        try {
+            $dom->appendChild(new \DOMElement($root));
+        } catch (\DOMException $e) {
+            throw new Exception\InvalidArgument($e->getMessage());
         }
 
-        foreach ($array as $key => $element) {
-            if (is_int($key)) {
-                if (is_array($element)) {
-                    self::transform($element, $root, $item, $sxe->addChild($item));
-                } elseif (
-                    $element instanceof \SimpleXMLElement
-                ) {
-                    $node = dom_import_simplexml($sxe->addChild($item));
+        return static::transformRecursive($array, $item, simplexml_import_dom($dom));
+    }
 
-                    foreach (dom_import_simplexml($element)->childNodes as $child) {
-                        $node->appendChild(
-                            $node->ownerDocument->importNode($child, true)
-                        );
+    /**
+     * Base method for transform.
+     */
+    protected static function transformRecursive(array $array, string $item, \SimpleXMLElement $sxe): \SimpleXMLElement
+    {
+        foreach ($array as $key => $value) {
+            if (\is_int($key)) {
+                if (\is_scalar($value)) {
+                    $sxe->{$item}[] = $value;
+                } elseif (\is_array($value)) {
+                    static::transformRecursive($value, $item, $sxe->addChild($item));
+                } elseif (\is_object($value)) {
+                    if ($value instanceof \SimpleXMLElement) {
+                        $node = dom_import_simplexml($sxe->addChild($item));
+
+                        foreach (dom_import_simplexml($value)->childNodes as $child) {
+                            $node->appendChild($node->ownerDocument->importNode($child, true));
+                        }
+                    } else {
+                        static::transformRecursive((array) $value, $item, $sxe->addChild($item));
                     }
-                } else {
-                    $sxe->{$item}[] = $element;
                 }
             } else {
-                if ($key[0] === '@') {
-                    $sxe[substr($key, 1)] = $element;
-                } elseif (is_array($element)) {
-                    self::transform($element, $root, $item, $sxe->addChild($key));
-                } elseif (
-                    $element instanceof \SimpleXMLElement
-                ) {
-                    $node = dom_import_simplexml($sxe->addChild($key));
+                if (\str_starts_with($key, '@')) {
+                    $sxe[substr($key, 1)] = $value;
+                } elseif (\is_scalar($value)) {
+                    $sxe->{$key} = $value;
+                } elseif (\is_array($value)) {
+                    static::transformRecursive($value, $item, $sxe->addChild($key));
+                } elseif (\is_object($value)) {
+                    if ($value instanceof \SimpleXMLElement) {
+                        $node = dom_import_simplexml($sxe->addChild($key));
 
-                    foreach (dom_import_simplexml($element)->childNodes as $child) {
-                        $node->appendChild(
-                            $node->ownerDocument->importNode($child, true)
-                        );
+                        foreach (dom_import_simplexml($value)->childNodes as $child) {
+                            $node->appendChild($node->ownerDocument->importNode($child, true));
+                        }
+                    } else {
+                        static::transformRecursive((array) $value, $item, $sxe->addChild($key));
                     }
-                } else {
-                    $sxe->{$key} = $element;
                 }
             }
         }

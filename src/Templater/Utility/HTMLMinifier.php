@@ -12,8 +12,8 @@ class HTMLMinifier
      */
     public static function transform(string $contents): string
     {
-        preg_match_all('~<(script|style|t)\b[^>]*+>.*?</\1>~is',
-            $contents, $matches, flags: PREG_OFFSET_CAPTURE | PREG_SET_ORDER
+        preg_match_all('~<(script|style|t)\b[^>]*+>.*?</\1>~is', $contents, $matches,
+            flags: PREG_OFFSET_CAPTURE | PREG_SET_ORDER
         );
 
         $chunks = [];
@@ -27,7 +27,7 @@ class HTMLMinifier
 
             $chunks[] = static::$tag($M[0][0]);
 
-            $pos = (int) $M[0][1] + strlen($M[0][0]);
+            $pos = (int) $M[0][1] + \strlen($M[0][0]);
         }
 
         $chunks[] = static::between(substr($contents, $pos));
@@ -72,8 +72,6 @@ class HTMLMinifier
             return '';
         }
 
-        $chunk = preg_replace("/[ \t\n\r\v\f\0]+/", ' ', $chunk);
-
-        return str_replace('> <', '><', $chunk);
+        return str_replace('> <', '><', preg_replace("/[ \t\n\r\v\f\0]+/", ' ', $chunk));
     }
 }

@@ -66,7 +66,7 @@ abstract class Processor
      */
     protected function normalizeContext(array|object|null $context): array
     {
-        return is_object($context) ? get_object_vars($context) : (array) $context;
+        return \is_object($context) ? get_object_vars($context) : (array) $context;
     }
 
     /**
@@ -74,7 +74,7 @@ abstract class Processor
      */
     protected function normalizeFilename($filename, $extension, ?string $dir = null): string
     {
-        if (!str_ends_with($filename, ".$extension")) {
+        if (!\str_ends_with($filename, ".$extension")) {
             $filename .= ".$extension";
         }
 

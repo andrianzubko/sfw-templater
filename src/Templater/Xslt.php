@@ -42,10 +42,7 @@ class Xslt extends Processor
 
         $filename = $this->normalizeFilename($filename, 'xsl', $this->options['dir']);
 
-        $context = [
-            ...$this->options['globals'],
-            ...$this->normalizeContext($context),
-        ];
+        $context = [...$this->options['globals'], ...$this->normalizeContext($context)];
 
         if (!isset($this->processors[$filename])) {
             $doc = new \DOMDocument();

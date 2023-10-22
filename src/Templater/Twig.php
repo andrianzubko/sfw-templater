@@ -55,9 +55,7 @@ class Twig extends Processor
 
         if (isset($this->options['functions'])) {
             foreach ($this->options['functions'] as $name => $value) {
-                $this->twig->addFunction(
-                    new \Twig\TwigFunction($name, $value)
-                );
+                $this->twig->addFunction(new \Twig\TwigFunction($name, $value));
             }
         }
     }

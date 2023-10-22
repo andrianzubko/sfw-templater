@@ -28,9 +28,7 @@ class HTMLDebugger extends HTMLMinifier
      */
     protected static function between(string $chunk): string
     {
-        $chunk = preg_replace_callback(
-            '~<[a-z][^>]+>~i', fn($M) => preg_replace('/\s+/u', ' ', $M[0]), $chunk
-        );
+        $chunk = preg_replace_callback('~<[a-z][^>]+>~i', fn($M) => preg_replace('/\s+/u', ' ', $M[0]), $chunk);
 
         $chunk = preg_replace('/>(\s+)</u', '><!--\1--><', $chunk);
 

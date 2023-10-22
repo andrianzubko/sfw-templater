@@ -73,9 +73,7 @@ class Native extends Processor
 
             ob_clean();
 
-            if (isset($isolator->main)
-                && $isolator->main instanceof \Closure
-            ) {
+            if (isset($isolator->main) && $isolator->main instanceof \Closure) {
                 ($isolator->main)();
             }
 
@@ -88,9 +86,7 @@ class Native extends Processor
                 ->setLine($e->getLine());
         }
 
-        if ($this->options['minify']
-            && $this->mime === 'text/html'
-        ) {
+        if ($this->options['minify'] && $this->mime === 'text/html') {
             if ($this->options['debug']) {
                 $contents = Utility\HTMLDebugger::transform($contents);
             } else {
