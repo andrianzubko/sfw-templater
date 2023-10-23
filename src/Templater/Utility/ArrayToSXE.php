@@ -50,7 +50,7 @@ class ArrayToSXE
                     }
                 }
             } else {
-                if (\str_starts_with($key, '@')) {
+                if (str_starts_with($key, '@')) {
                     $sxe[substr($key, 1)] = $value;
                 } elseif (\is_scalar($value)) {
                     $sxe->{$key} = $value;

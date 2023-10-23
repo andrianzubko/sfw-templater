@@ -74,7 +74,7 @@ abstract class Processor
      */
     protected function normalizeFilename($filename, $extension, ?string $dir = null): string
     {
-        if (!\str_ends_with($filename, ".$extension")) {
+        if (!str_ends_with($filename, ".$extension")) {
             $filename .= ".$extension";
         }
 
