@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SFW\Templater;
@@ -29,13 +30,9 @@ class Twig extends Processor
 
             $this->twig = new \Twig\Environment($loader, [
                 'debug' => $this->options['debug'] ?? false,
-
                 'cache' => $this->options['cache'] ?? false,
-
                 'auto_reload' => $this->options['reload'] ?? false,
-
                 'strict_variables' => $this->options['strict'] ?? false,
-
                 'autoescape' => 'name',
             ]);
         } catch (\LogicException $e) {

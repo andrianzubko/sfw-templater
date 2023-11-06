@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace SFW\Templater\Utility;
@@ -14,7 +15,7 @@ class HTMLMinifier
     public static function transform(string $contents): string
     {
         preg_match_all('~<(script|style|t)\b[^>]*+>.*?</\1>~is', $contents, $matches,
-            flags: PREG_OFFSET_CAPTURE | PREG_SET_ORDER
+            flags: PREG_OFFSET_CAPTURE | PREG_SET_ORDER,
         );
 
         $chunks = [];
