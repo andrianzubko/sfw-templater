@@ -48,7 +48,7 @@ class Native extends Processor
             return str_replace(' ', '\\x20',
                 json_encode($string,
                     JSON_UNESCAPED_UNICODE | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_TAG,
-                )
+                ),
             );
         };
     }
